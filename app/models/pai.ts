@@ -7,8 +7,9 @@ import
 import Jugador from './jugador.js'
 
 export default class Pai extends BaseModel {
-  @column({ isPrimary: true })
-  declare codpais: number
+  
+ @column({ isPrimary: true, columnName: 'cod pais' })
+declare codpais: number
 
   @column()
   declare nombrepais: string

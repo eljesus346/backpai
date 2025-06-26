@@ -1,40 +1,33 @@
-// logica de negocio consultas
-import Pai from '../models/pai.js'
+import Pai from '#models/pai'
 
 export default class PaisService {
-
-  async crear(datos) {
-    return await Pai.create(datos)
+  async crear({ nombrepais, comunitario }) {
+    return await Pai.create({ nombrepais, comunitario })
   }
 
   async listar() {
-    return await Pai.query()
+    return await Pai.all()
   }
 
-  async listaId(codpais) {
-    return await Pai.query().where('codpais', codpais)
+  async listarId(codpais: number) {
+    return await Pai.find(codpais)
   }
 
-  async actualizar(codpais, datos) {
-    const lista = await Pai.query().where(codpais)
-    lista.nombrepais = datos.nombrepais
-    lista.comunitario=datos.comunitario
-    lista.save()
-    return lista
+  async actualizar(codpais: number, data: { nombrepais: string, comunitario: string }) {
+    const pais = await Pai.findOrFail(codpais)
+    pais.merge(data)
+    await pais.save()
+    return pais
   }
 
-  async eliminar(codpais: number){
-    const encontrado = await Pai.find(codpais)
-    if(encontrado){
-      await encontrado.delete()
-    return "eliminado."
-    }
-    else{
-      return "No eliminado."
-    }
+  async eliminar(codpais: number) {
+    const pais = await Pai.findOrFail(codpais)
+    await pais.delete()
+    return { eliminado: true }
   }
-  async conteo(){
-const resultado = await Pai.query().count('*')
-    return resultado[0].$extras.conteo
-}
+
+  async conteo() {
+    const total = await Pai.query().count('* as total')
+    return total[0]
+  }
 }
